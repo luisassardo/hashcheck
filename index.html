@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>Hash Checker — verificación local de archivos</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <div class="brand">
+    <h1 data-i18n="title">Hash Checker</h1>
+    <p class="subtitle" data-i18n="subtitle">Verifica la integridad de archivos sin subirlos a ningún servidor.</p>
+  </div>
+  <div class="lang-switch" role="group" aria-label="Language">
+    <button type="button" data-lang="es" class="active">ES</button>
+    <button type="button" data-lang="en">EN</button>
+  </div>
+</header>
+
+<main>
+  <section id="drop-zone" class="drop-zone" aria-label="Drop file here">
+    <p class="drop-primary" data-i18n="drop_primary">Arrastra un archivo aquí</p>
+    <p class="drop-secondary" data-i18n="drop_secondary">o</p>
+    <label class="btn">
+      <span data-i18n="choose_file">Elegir archivo</span>
+      <input type="file" id="file-input" hidden>
+    </label>
+    <p class="drop-note" data-i18n="drop_note">El archivo se procesa íntegramente en tu navegador. No sale de tu dispositivo.</p>
+  </section>
+
+  <section id="file-info" class="file-info hidden">
+    <div><strong data-i18n="file">Archivo:</strong> <span id="file-name"></span></div>
+    <div><strong data-i18n="size">Tamaño:</strong> <span id="file-size"></span></div>
+    <div><strong data-i18n="modified">Modificado:</strong> <span id="file-mtime"></span></div>
+  </section>
+
+  <section class="algorithms">
+    <h2 data-i18n="algorithms">Algoritmos</h2>
+    <div class="algo-grid">
+      <label><input type="checkbox" value="SHA-256" checked> SHA-256</label>
+      <label><input type="checkbox" value="SHA-1" checked> SHA-1</label>
+      <label><input type="checkbox" value="SHA-512"> SHA-512</label>
+      <label><input type="checkbox" value="MD5" checked> MD5</label>
+    </div>
+    <button id="compute-btn" class="btn btn-primary" disabled>
+      <span data-i18n="compute">Calcular hashes</span>
+    </button>
+  </section>
+
+  <section id="progress" class="progress hidden">
+    <div class="progress-bar"><div id="progress-fill"></div></div>
+    <div id="progress-text" class="progress-text"></div>
+  </section>
+
+  <section id="results" class="results hidden">
+    <h2 data-i18n="results">Resultados</h2>
+    <div id="results-list"></div>
+  </section>
+
+  <section class="compare">
+    <h2 data-i18n="compare">Comparar con hash esperado</h2>
+    <p class="hint" data-i18n="compare_hint">Pega un hash (de cualquier algoritmo). Te diremos si coincide con alguno de los calculados.</p>
+    <div class="compare-row">
+      <input type="text" id="expected-hash" placeholder="ej: a1b2c3..." autocomplete="off" spellcheck="false">
+      <div id="compare-result" class="compare-result"></div>
+    </div>
+  </section>
+
+  <details class="about">
+    <summary data-i18n="about_summary">¿Cómo funciona y por qué confiar en esta herramienta?</summary>
+    <div data-i18n="about_body">
+      <p>Esta herramienta calcula los hashes (huellas digitales) de un archivo usando criptografía nativa del navegador (Web Crypto API). El archivo nunca sale de tu dispositivo — no hay servidor, no hay subida, no hay telemetría.</p>
+      <p>Puedes verificar esto:</p>
+      <ul>
+        <li>Abriendo las herramientas de desarrollo del navegador → pestaña Red → ver que no hay peticiones cuando calculas hashes.</li>
+        <li>Revisando el código fuente: todo es HTML/JS/CSS estático, sin frameworks, sin CDN externos.</li>
+        <li>Usándola sin conexión: una vez cargada la página, puedes desconectarte de Internet y seguirá funcionando.</li>
+      </ul>
+      <p><strong>Limitación:</strong> archivos muy grandes (varios GB) pueden ser lentos o agotar la memoria del navegador. Para esos casos usa una herramienta nativa (<code>shasum -a 256 archivo</code> en macOS/Linux, <code>certutil -hashfile archivo SHA256</code> en Windows).</p>
+    </div>
+  </details>
+</main>
+
+<footer>
+  <p>
+    <span data-i18n="footer">Parte de</span>
+    <a href="https://github.com/luisassardo" rel="noopener">tools-cybersecurity</a> ·
+    <span data-i18n="for_audience">Para periodistas y defensores de derechos humanos</span>
+  </p>
+</footer>
+
+<script src="md5.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
