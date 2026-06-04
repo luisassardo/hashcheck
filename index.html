@@ -71,11 +71,11 @@
   <section class="ops" aria-label="HashCheck tool">
     <div class="ops-head">
       <span class="ops-label"><span data-ico="terminal"></span> <span data-i18n="ops_label">Verify a file</span></span>
-      <span class="ops-stat" data-scramble>0 REQUESTS</span>
+      <span class="ops-stat" data-scramble data-i18n="zero_requests">0 REQUESTS</span>
     </div>
 
     <div class="panel">
-      <div class="panel-head"><span class="dot"></span> HashCheck <span class="right">LOCAL · NO UPLOAD</span></div>
+      <div class="panel-head"><span class="dot"></span> HashCheck <span class="right" data-i18n="local_no_upload">LOCAL · NO UPLOAD</span></div>
       <div class="panel-body">
 
         <!-- drop zone -->
@@ -128,7 +128,7 @@
           <h2 class="block-label" data-i18n="compare">Compare against expected hash</h2>
           <p class="hint" data-i18n="compare_hint">Paste a hash (any algorithm). We will tell you if it matches one of the computed ones.</p>
           <div class="compare-row">
-            <input type="text" id="expected-hash" class="text-input mono" placeholder="e.g. a1b2c3..." autocomplete="off" spellcheck="false">
+            <input type="text" id="expected-hash" class="text-input mono" data-i18n-ph="expected_ph" placeholder="e.g. a1b2c3..." autocomplete="off" spellcheck="false">
             <div id="compare-result" class="compare-result mono"></div>
           </div>
         </section>

@@ -49,7 +49,10 @@
       feat4_d: 'HTML/JS/CSS estático, sin frameworks ni CDNs. Auditable y a prueba de desconexión.',
       ops_label: 'Verificar un archivo',
       about_clab: 'Sobre C-LAB',
-      devtools_note_short: 'Web Crypto API · procesado en el dispositivo'
+      devtools_note_short: 'Web Crypto API · procesado en el dispositivo',
+      zero_requests: '0 PETICIONES',
+      local_no_upload: 'LOCAL · SIN SUBIDA',
+      expected_ph: 'ej: a1b2c3...'
     },
     en: {
       title: 'Hash Checker',
@@ -93,7 +96,10 @@
       feat4_d: 'Static HTML/JS/CSS, no frameworks or CDNs. Auditable and disconnect-proof.',
       ops_label: 'Verify a file',
       about_clab: 'About C-LAB',
-      devtools_note_short: 'Web Crypto API · processed on-device'
+      devtools_note_short: 'Web Crypto API · processed on-device',
+      zero_requests: '0 REQUESTS',
+      local_no_upload: 'LOCAL · NO UPLOAD',
+      expected_ph: 'e.g. a1b2c3...'
     }
   };
 
@@ -133,6 +139,11 @@
       } else if (t[key] !== undefined) {
         el.textContent = t[key];
       }
+    });
+    // translate input placeholders (data-i18n-ph)
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+      const key = el.getAttribute('data-i18n-ph');
+      if (t[key] !== undefined) el.setAttribute('placeholder', t[key]);
     });
     document.title = t.title + ' · ' + t.subtitle.replace(/\.$/, '');
     document.querySelectorAll('.lang-switch button').forEach(b => {
