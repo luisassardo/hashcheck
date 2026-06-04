@@ -34,7 +34,22 @@
       error: 'Error',
       about_summary: '¿Cómo funciona y por qué confiar en esta herramienta?',
       footer: 'Parte de',
-      for_audience: 'Para periodistas y defensores de derechos humanos'
+      for_audience: 'Para periodistas y defensores de derechos humanos',
+      eyebrow: 'C-LAB · Herramienta · integridad de archivos',
+      tagline: 'Verifica la integridad de archivos, sin subir nada.',
+      lead: 'HashCheck calcula las huellas criptográficas de un archivo enteramente en tu navegador con la Web Crypto API nativa. El archivo nunca sale de tu dispositivo, sin servidor, sin subida, sin telemetría, y sigue funcionando sin conexión.',
+      devtools_note: 'Funciona 100% en tu navegador. Abre DevTools → Red y compruébalo: cero peticiones al calcular.',
+      feat1_t: 'Solo local',
+      feat1_d: 'El archivo se lee en memoria y nunca se sube. Ningún servidor toca tus datos.',
+      feat2_t: 'Cuatro algoritmos',
+      feat2_d: 'SHA-256, SHA-1, SHA-512 y MD5 calculados en una sola pasada.',
+      feat3_t: 'Compara un hash',
+      feat3_d: 'Pega un hash esperado; HashCheck te dice al instante si coincide.',
+      feat4_t: 'Funciona offline',
+      feat4_d: 'HTML/JS/CSS estático, sin frameworks ni CDNs. Auditable y a prueba de desconexión.',
+      ops_label: 'Verificar un archivo',
+      about_clab: 'Sobre C-LAB',
+      devtools_note_short: 'Web Crypto API · procesado en el dispositivo'
     },
     en: {
       title: 'Hash Checker',
@@ -63,7 +78,22 @@
       error: 'Error',
       about_summary: 'How does it work, and why trust this tool?',
       footer: 'Part of',
-      for_audience: 'For journalists and human-rights defenders'
+      for_audience: 'For journalists and human-rights defenders',
+      eyebrow: 'C-LAB · Tool · file integrity',
+      tagline: 'Verify file integrity, without uploading anything.',
+      lead: 'HashCheck computes a file\'s cryptographic fingerprints entirely in your browser with the native Web Crypto API. The file never leaves your device, no server, no upload, no telemetry, and it keeps working offline.',
+      devtools_note: 'Runs 100% in your browser. Open DevTools → Network and watch: zero requests when you hash.',
+      feat1_t: 'Local-only',
+      feat1_d: 'The file is read in-memory and never uploaded. No server touches your data.',
+      feat2_t: 'Four algorithms',
+      feat2_d: 'SHA-256, SHA-1, SHA-512 and MD5 computed in a single pass.',
+      feat3_t: 'Compare a hash',
+      feat3_d: 'Paste an expected hash; HashCheck tells you instantly if it matches.',
+      feat4_t: 'Works offline',
+      feat4_d: 'Static HTML/JS/CSS, no frameworks or CDNs. Auditable and disconnect-proof.',
+      ops_label: 'Verify a file',
+      about_clab: 'About C-LAB',
+      devtools_note_short: 'Web Crypto API · processed on-device'
     }
   };
 
@@ -104,7 +134,7 @@
         el.textContent = t[key];
       }
     });
-    document.title = t.title + ' — ' + t.subtitle.replace(/\.$/, '');
+    document.title = t.title + ' · ' + t.subtitle.replace(/\.$/, '');
     document.querySelectorAll('.lang-switch button').forEach(b => {
       b.classList.toggle('active', b.dataset.lang === lang);
     });

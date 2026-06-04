@@ -1,97 +1,160 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="noindex">
-<title>Hash Checker — verificación local de archivos</title>
+<title>HashCheck · local file verification · C-LAB</title>
+<meta name="theme-color" content="#07090c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2307090c'/%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%235be3c3' stroke-opacity='.55'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%235be3c3'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="node.css">
 <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-<header>
-  <div class="brand">
-    <h1 data-i18n="title">Hash Checker</h1>
-    <p class="subtitle" data-i18n="subtitle">Verifica la integridad de archivos sin subirlos a ningún servidor.</p>
+<body data-node="hashcheck">
+
+<div class="bg" aria-hidden="true">
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+  <div class="bg-scan"></div>
+  <div class="bg-motes"></div>
+  <div class="bg-sweep"></div>
+</div>
+
+<span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br brr"></span>
+
+<header class="rail">
+  <div class="group">
+    <span class="brand"><span class="mark" data-ico="shield"></span> ARGUS</span>
+    <span class="crumb hide-narrow"><span class="sep">/</span> <a href="https://c-lab.tools/" rel="noopener">C-LAB</a> <span class="sep">/</span> <span class="sig">HASHCHECK</span></span>
   </div>
-  <div class="lang-switch" role="group" aria-label="Language">
-    <button type="button" data-lang="es" class="active">ES</button>
-    <button type="button" data-lang="en">EN</button>
+  <div class="group">
+    <span class="hide-narrow">WEB CRYPTO · LOCAL</span>
+    <span class="lang-switch" role="group" aria-label="Language">
+      <button type="button" data-lang="es">ES</button>
+      <button type="button" data-lang="en" class="active">EN</button>
+    </span>
+    <span><span id="clock">--:--:--</span> UTC</span>
+    <span class="status-pill"><span class="live-dot"></span> LIVE</span>
   </div>
 </header>
 
 <main>
-  <section id="drop-zone" class="drop-zone" aria-label="Drop file here">
-    <p class="drop-primary" data-i18n="drop_primary">Arrastra un archivo aquí</p>
-    <p class="drop-secondary" data-i18n="drop_secondary">o</p>
-    <label class="btn">
-      <span data-i18n="choose_file">Elegir archivo</span>
-      <input type="file" id="file-input" hidden>
-    </label>
-    <p class="drop-note" data-i18n="drop_note">El archivo se procesa íntegramente en tu navegador. No sale de tu dispositivo.</p>
-  </section>
+  <!-- ===================== IDENTITY (left) ===================== -->
+  <section class="identity">
+    <p class="eyebrow"><span class="ln"></span><span data-ico="fingerprint"></span> <span data-i18n="eyebrow">C-LAB · Tool · file integrity</span></p>
+    <h1 class="wordmark product"><span data-decode>Hash</span><span class="accent" data-decode>Check</span></h1>
+    <p class="role">SHA-256 · SHA-1 · SHA-512 · MD5</p>
+    <h2 class="title" data-i18n="tagline">Verify file integrity, without uploading anything.</h2>
+    <p class="desc" data-i18n="lead">HashCheck computes a file's cryptographic fingerprints entirely in your browser with the native Web Crypto API. The file never leaves your device, no server, no upload, no telemetry, and it keeps working offline.</p>
 
-  <section id="file-info" class="file-info hidden">
-    <div><strong data-i18n="file">Archivo:</strong> <span id="file-name"></span></div>
-    <div><strong data-i18n="size">Tamaño:</strong> <span id="file-size"></span></div>
-    <div><strong data-i18n="modified">Modificado:</strong> <span id="file-mtime"></span></div>
-  </section>
-
-  <section class="algorithms">
-    <h2 data-i18n="algorithms">Algoritmos</h2>
-    <div class="algo-grid">
-      <label><input type="checkbox" value="SHA-256" checked> SHA-256</label>
-      <label><input type="checkbox" value="SHA-1" checked> SHA-1</label>
-      <label><input type="checkbox" value="SHA-512"> SHA-512</label>
-      <label><input type="checkbox" value="MD5" checked> MD5</label>
+    <div class="cta-row">
+      <a class="btn bare" href="https://c-lab.tools/" rel="noopener"><span data-ico="shield"></span> <span data-i18n="about_clab">About C-LAB</span></a>
+      <a class="btn bare" href="https://github.com/luisassardo/hash-checker" rel="noopener"><span data-ico="github"></span> GitHub</a>
     </div>
-    <button id="compute-btn" class="btn btn-primary" disabled>
-      <span data-i18n="compute">Calcular hashes</span>
-    </button>
-  </section>
+    <p class="cta-note" data-i18n="devtools_note">Runs 100% in your browser. Open DevTools → Network and watch: zero requests when you hash.</p>
 
-  <section id="progress" class="progress hidden">
-    <div class="progress-bar"><div id="progress-fill"></div></div>
-    <div id="progress-text" class="progress-text"></div>
-  </section>
-
-  <section id="results" class="results hidden">
-    <h2 data-i18n="results">Resultados</h2>
-    <div id="results-list"></div>
-  </section>
-
-  <section class="compare">
-    <h2 data-i18n="compare">Comparar con hash esperado</h2>
-    <p class="hint" data-i18n="compare_hint">Pega un hash (de cualquier algoritmo). Te diremos si coincide con alguno de los calculados.</p>
-    <div class="compare-row">
-      <input type="text" id="expected-hash" placeholder="ej: a1b2c3..." autocomplete="off" spellcheck="false">
-      <div id="compare-result" class="compare-result"></div>
+    <div class="features">
+      <div class="feature"><span class="fnum mono">01</span><span class="fi" data-ico="cloudOff"></span><h3 data-i18n="feat1_t">Local-only</h3><p data-i18n="feat1_d">The file is read in-memory and never uploaded. No server touches your data.</p></div>
+      <div class="feature"><span class="fnum mono">02</span><span class="fi" data-ico="fingerprint"></span><h3 data-i18n="feat2_t">Four algorithms</h3><p data-i18n="feat2_d">SHA-256, SHA-1, SHA-512 and MD5 computed in a single pass.</p></div>
+      <div class="feature"><span class="fnum mono">03</span><span class="fi" data-ico="compare"></span><h3 data-i18n="feat3_t">Compare a hash</h3><p data-i18n="feat3_d">Paste an expected hash; HashCheck tells you instantly if it matches.</p></div>
+      <div class="feature"><span class="fnum mono">04</span><span class="fi" data-ico="cpu"></span><h3 data-i18n="feat4_t">Works offline</h3><p data-i18n="feat4_d">Static HTML/JS/CSS, no frameworks or CDNs. Auditable and disconnect-proof.</p></div>
     </div>
+
+    <details class="about">
+      <summary data-i18n="about_summary">How does it work, and why trust this tool?</summary>
+      <div data-i18n="about_body"></div>
+    </details>
   </section>
 
-  <details class="about">
-    <summary data-i18n="about_summary">¿Cómo funciona y por qué confiar en esta herramienta?</summary>
-    <div data-i18n="about_body">
-      <p>Esta herramienta calcula los hashes (huellas digitales) de un archivo usando criptografía nativa del navegador (Web Crypto API). El archivo nunca sale de tu dispositivo — no hay servidor, no hay subida, no hay telemetría.</p>
-      <p>Puedes verificar esto:</p>
-      <ul>
-        <li>Abriendo las herramientas de desarrollo del navegador → pestaña Red → ver que no hay peticiones cuando calculas hashes.</li>
-        <li>Revisando el código fuente: todo es HTML/JS/CSS estático, sin frameworks, sin CDN externos.</li>
-        <li>Usándola sin conexión: una vez cargada la página, puedes desconectarte de Internet y seguirá funcionando.</li>
-      </ul>
-      <p><strong>Limitación:</strong> archivos muy grandes (varios GB) pueden ser lentos o agotar la memoria del navegador. Para esos casos usa una herramienta nativa (<code>shasum -a 256 archivo</code> en macOS/Linux, <code>certutil -hashfile archivo SHA256</code> en Windows).</p>
+  <!-- ===================== OPS = the working tool (right) ===================== -->
+  <section class="ops" aria-label="HashCheck tool">
+    <div class="ops-head">
+      <span class="ops-label"><span data-ico="terminal"></span> <span data-i18n="ops_label">Verify a file</span></span>
+      <span class="ops-stat" data-scramble>0 REQUESTS</span>
     </div>
-  </details>
+
+    <div class="panel">
+      <div class="panel-head"><span class="dot"></span> HashCheck <span class="right">LOCAL · NO UPLOAD</span></div>
+      <div class="panel-body">
+
+        <!-- drop zone -->
+        <section id="drop-zone" class="drop-zone" aria-label="Drop file here">
+          <span class="drop-ico" data-ico="document"></span>
+          <p class="drop-primary" data-i18n="drop_primary">Drop a file here</p>
+          <p class="drop-secondary" data-i18n="drop_secondary">or</p>
+          <label class="btn ghost btn-file">
+            <span data-i18n="choose_file">Choose file</span>
+            <input type="file" id="file-input" hidden>
+          </label>
+          <p class="drop-note" data-i18n="drop_note">The file is processed entirely in your browser. It never leaves your device.</p>
+        </section>
+
+        <!-- file info -->
+        <section id="file-info" class="file-info hidden">
+          <div class="finfo-row"><span class="finfo-k mono" data-i18n="file">File:</span> <span id="file-name" class="finfo-v"></span></div>
+          <div class="finfo-row"><span class="finfo-k mono" data-i18n="size">Size:</span> <span id="file-size" class="finfo-v mono"></span></div>
+          <div class="finfo-row"><span class="finfo-k mono" data-i18n="modified">Modified:</span> <span id="file-mtime" class="finfo-v mono"></span></div>
+        </section>
+
+        <!-- algorithms -->
+        <section class="algorithms">
+          <h2 class="block-label" data-i18n="algorithms">Algorithms</h2>
+          <div class="algo-grid">
+            <label><input type="checkbox" value="SHA-256" checked> SHA-256</label>
+            <label><input type="checkbox" value="SHA-1" checked> SHA-1</label>
+            <label><input type="checkbox" value="SHA-512"> SHA-512</label>
+            <label><input type="checkbox" value="MD5" checked> MD5</label>
+          </div>
+          <button id="compute-btn" class="btn primary btn-block" disabled>
+            <span data-ico="bolt"></span> <span data-i18n="compute">Compute hashes</span>
+          </button>
+        </section>
+
+        <!-- progress -->
+        <section id="progress" class="progress hidden">
+          <div class="progress-bar"><div id="progress-fill"></div></div>
+          <div id="progress-text" class="progress-text mono"></div>
+        </section>
+
+        <!-- results -->
+        <section id="results" class="results hidden">
+          <h2 class="block-label" data-i18n="results">Results</h2>
+          <div id="results-list"></div>
+        </section>
+
+        <!-- compare -->
+        <section class="compare">
+          <h2 class="block-label" data-i18n="compare">Compare against expected hash</h2>
+          <p class="hint" data-i18n="compare_hint">Paste a hash (any algorithm). We will tell you if it matches one of the computed ones.</p>
+          <div class="compare-row">
+            <input type="text" id="expected-hash" class="text-input mono" placeholder="e.g. a1b2c3..." autocomplete="off" spellcheck="false">
+            <div id="compare-result" class="compare-result mono"></div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+    <p class="ops-stat" data-i18n="devtools_note_short">Web Crypto API · processed on-device</p>
+  </section>
 </main>
 
-<footer>
-  <p>
-    <span data-i18n="footer">Esta herramienta es parte de</span>
-    <a id="clab-link" href="https://c-lab.tools/" rel="noopener" target="_blank">C-LAB</a> ·
-    <span data-i18n="for_audience">Creada para periodistas y defensores de derechos humanos.</span>
-  </p>
+<footer class="rail">
+  <nav class="netnav" aria-label="Node network">
+    <a class="node" href="https://argusdn.org/" rel="noopener"><span class="dotmark"></span> ARGUS</a>
+    <a class="node" href="https://c-lab.tools/" rel="noopener"><span class="dotmark"></span> C-LAB</a>
+    <span class="node active"><span class="dotmark"></span> HASHCHECK</span>
+    <a class="node live" href="https://apipass.c-lab.tools/" rel="noopener"><span class="dotmark"></span> APIPASS</a>
+  </nav>
+  <div class="info">
+    <a href="https://github.com/luisassardo/hash-checker" rel="noopener">GitHub</a>
+    <a href="mailto:luis@argusdn.org">luis@argusdn.org</a>
+    <span class="hide-narrow">© 2026 · ARGUS</span>
+  </div>
 </footer>
 
+<script src="icons.js"></script>
+<script src="node.js"></script>
 <script src="md5.js"></script>
 <script src="app.js"></script>
 </body>
