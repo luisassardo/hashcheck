@@ -8,7 +8,7 @@
   // ---------- i18n ----------
   const STRINGS = {
     es: {
-      title: 'Hash Checker',
+      title: 'HashCheck',
       subtitle: 'Verifica la integridad de archivos sin subirlos a ningún servidor.',
       drop_primary: 'Arrastra un archivo aquí',
       drop_secondary: 'o',
@@ -55,7 +55,7 @@
       expected_ph: 'ej: a1b2c3...'
     },
     en: {
-      title: 'Hash Checker',
+      title: 'HashCheck',
       subtitle: 'Verify file integrity without uploading anything to any server.',
       drop_primary: 'Drop a file here',
       drop_secondary: 'or',
@@ -100,6 +100,53 @@
       zero_requests: '0 REQUESTS',
       local_no_upload: 'LOCAL · NO UPLOAD',
       expected_ph: 'e.g. a1b2c3...'
+    },
+    de: {
+      title: 'HashCheck',
+      subtitle: 'Prüfe die Integrität von Dateien, ohne sie auf einen Server hochzuladen.',
+      drop_primary: 'Zieh eine Datei hierher',
+      drop_secondary: 'oder',
+      choose_file: 'Datei auswählen',
+      drop_note: 'Die Datei wird vollständig in deinem Browser verarbeitet. Sie verlässt dein Gerät nicht.',
+      file: 'Datei:',
+      size: 'Größe:',
+      modified: 'Geändert:',
+      algorithms: 'Algorithmen',
+      compute: 'Hashes berechnen',
+      computing: 'Berechne…',
+      results: 'Ergebnisse',
+      compare: 'Mit erwartetem Hash vergleichen',
+      compare_hint: 'Füg einen Hash ein (beliebiger Algorithmus). Wir sagen dir, ob er mit einem der berechneten übereinstimmt.',
+      copy: 'Kopieren',
+      copied: 'Kopiert',
+      reading: 'Lese Datei',
+      hashing: 'Berechne',
+      match: '✓ Stimmt überein mit',
+      nomatch: '✗ Stimmt mit keinem berechneten Hash überein',
+      partial: '⚠ Länge stimmt mit keinem gewählten Algorithmus überein',
+      no_algos: 'Wähl mindestens einen Algorithmus.',
+      error: 'Fehler',
+      about_summary: 'Wie funktioniert es, und warum diesem Tool vertrauen?',
+      footer: 'Teil von',
+      for_audience: 'Für Journalist:innen und Menschenrechtsverteidiger:innen',
+      eyebrow: 'C-LAB · Werkzeug · Dateiintegrität',
+      tagline: 'Prüfe die Integrität von Dateien — ohne etwas hochzuladen.',
+      lead: 'HashCheck berechnet die kryptografischen Fingerabdrücke einer Datei vollständig in deinem Browser mit der nativen Web Crypto API. Die Datei verlässt dein Gerät nicht — kein Server, kein Upload, keine Telemetrie — und es funktioniert auch offline.',
+      devtools_note: 'Läuft zu 100 % in deinem Browser. Öffne DevTools → Netzwerk und beobachte: null Anfragen beim Hashen.',
+      feat1_t: 'Nur lokal',
+      feat1_d: 'Die Datei wird im Speicher gelesen und niemals hochgeladen. Kein Server berührt deine Daten.',
+      feat2_t: 'Vier Algorithmen',
+      feat2_d: 'SHA-256, SHA-1, SHA-512 und MD5 in einem Durchgang berechnet.',
+      feat3_t: 'Hash vergleichen',
+      feat3_d: 'Füg einen erwarteten Hash ein; HashCheck sagt dir sofort, ob er übereinstimmt.',
+      feat4_t: 'Funktioniert offline',
+      feat4_d: 'Statisches HTML/JS/CSS, keine Frameworks oder CDNs. Auditierbar und trennungssicher.',
+      ops_label: 'Datei prüfen',
+      about_clab: 'Über C-LAB',
+      devtools_note_short: 'Web Crypto API · auf dem Gerät verarbeitet',
+      zero_requests: '0 ANFRAGEN',
+      local_no_upload: 'LOKAL · KEIN UPLOAD',
+      expected_ph: 'z. B. a1b2c3...'
     }
   };
 
@@ -123,6 +170,16 @@
         <li>Use it offline: once loaded, you can disconnect from the internet and it still works.</li>
       </ul>
       <p><strong>Limitation:</strong> very large files (several GB) may be slow or exhaust browser memory. For those, use a native tool (<code>shasum -a 256 file</code> on macOS/Linux, <code>certutil -hashfile file SHA256</code> on Windows).</p>
+    `,
+    de: `
+      <p>Dieses Werkzeug berechnet die Hashes (digitalen Fingerabdrücke) einer Datei mit der nativen Kryptografie deines Browsers (Web Crypto API). Die Datei verlässt dein Gerät nie — kein Server, kein Upload, keine Telemetrie.</p>
+      <p>Du kannst das überprüfen:</p>
+      <ul>
+        <li>Öffne die Entwicklertools deines Browsers → Reiter Netzwerk → beobachte, dass beim Hashen keine Anfragen ausgehen.</li>
+        <li>Lies den Quelltext: reines HTML/JS/CSS, keine Frameworks, keine externen CDNs.</li>
+        <li>Benutz es offline: Ist die Seite einmal geladen, kannst du dich vom Internet trennen und es funktioniert weiter.</li>
+      </ul>
+      <p><strong>Einschränkung:</strong> Sehr große Dateien (mehrere GB) können langsam sein oder den Browser-Speicher erschöpfen. Nutz in dem Fall ein natives Werkzeug (<code>shasum -a 256 datei</code> auf macOS/Linux, <code>certutil -hashfile datei SHA256</code> auf Windows).</p>
     `
   };
 
@@ -161,9 +218,9 @@
     b.addEventListener('click', () => applyLang(b.dataset.lang));
   });
 
-  // Detect browser language on first load (es or en)
+  // Detect browser language on first load (es, en, de)
   const browserLang = (navigator.language || 'es').toLowerCase().slice(0, 2);
-  applyLang(browserLang === 'en' ? 'en' : 'es');
+  applyLang(STRINGS[browserLang] ? browserLang : 'es');
 
   // ---------- File handling ----------
   const dropZone = document.getElementById('drop-zone');
