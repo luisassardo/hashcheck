@@ -95,7 +95,7 @@ Para verificar autenticidad: obtener el hash de un canal independiente del archi
 ## Estructura
 
 ```
-hash-checker/
+hash-check/
 ├── index.html      # UI
 ├── styles.css      # Dark theme
 ├── app.js          # Lógica principal (i18n, lectura, hashing, comparación)
