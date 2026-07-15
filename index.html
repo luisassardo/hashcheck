@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -31,8 +31,8 @@
   <div class="group">
     <span class="hide-narrow">WEB CRYPTO · LOCAL</span>
     <span class="lang-switch" role="group" aria-label="Language">
-      <button type="button" data-lang="es">ES</button>
-      <button type="button" data-lang="en" class="active">EN</button>
+      <button type="button" data-lang="es" class="active">ES</button>
+      <button type="button" data-lang="en">EN</button>
       <button type="button" data-lang="de">DE</button>
     </span>
     <span><span id="clock">--:--:--</span> UTC</span>
@@ -57,8 +57,8 @@
 
     <div class="features">
       <div class="feature"><span class="fnum mono">01</span><span class="fi" data-ico="cloudOff"></span><h3 data-i18n="feat1_t">Local-only</h3><p data-i18n="feat1_d">The file is read in-memory and never uploaded. No server touches your data.</p></div>
-      <div class="feature"><span class="fnum mono">02</span><span class="fi" data-ico="fingerprint"></span><h3 data-i18n="feat2_t">Four algorithms</h3><p data-i18n="feat2_d">SHA-256, SHA-1, SHA-512 and MD5 computed in a single pass.</p></div>
-      <div class="feature"><span class="fnum mono">03</span><span class="fi" data-ico="compare"></span><h3 data-i18n="feat3_t">Compare a hash</h3><p data-i18n="feat3_d">Paste an expected hash; HashCheck tells you instantly if it matches.</p></div>
+      <div class="feature"><span class="fnum mono">02</span><span class="fi" data-ico="fingerprint"></span><h3 data-i18n="feat2_t">Four algorithms</h3><p data-i18n="feat2_d">SHA-256, SHA-1, SHA-512 and MD5, computed on-device with the Web Crypto API.</p></div>
+      <div class="feature"><span class="fnum mono">03</span><span class="fi" data-ico="compare"></span><h3 data-i18n="feat3_t">Compare and re-verify</h3><p data-i18n="feat3_d">Paste an expected hash, or hash a whole folder into a manifest you can re-check later.</p></div>
       <div class="feature"><span class="fnum mono">04</span><span class="fi" data-ico="cpu"></span><h3 data-i18n="feat4_t">Works offline</h3><p data-i18n="feat4_d">Static HTML/JS/CSS, no frameworks or CDNs. Auditable and disconnect-proof.</p></div>
     </div>
 
@@ -78,6 +78,15 @@
     <div class="panel">
       <div class="panel-head"><span class="dot"></span> HashCheck <span class="right" data-i18n="local_no_upload">LOCAL · NO UPLOAD</span></div>
       <div class="panel-body">
+
+        <!-- mode switch -->
+        <div class="mode-switch" role="tablist" aria-label="Mode">
+          <button type="button" role="tab" data-mode="verify" class="active" aria-selected="true" data-i18n="mode_verify">Verify</button>
+          <button type="button" role="tab" data-mode="evidence" aria-selected="false" data-i18n="mode_evidence">Evidence</button>
+        </div>
+
+        <!-- ===================== MODE: VERIFY ===================== -->
+        <div id="mode-verify" class="mode-pane">
 
         <!-- drop zone -->
         <section id="drop-zone" class="drop-zone" aria-label="Drop file here">
@@ -133,6 +142,96 @@
             <div id="compare-result" class="compare-result mono"></div>
           </div>
         </section>
+
+        </div><!-- /mode-verify -->
+
+        <!-- ===================== MODE: EVIDENCE ===================== -->
+        <div id="mode-evidence" class="mode-pane hidden">
+
+          <!-- drop zone -->
+          <section id="ev-drop" class="drop-zone" aria-label="Drop folder here">
+            <span class="drop-ico" data-ico="fingerprint"></span>
+            <p class="drop-primary" data-i18n="ev_drop_primary">Drop a folder here</p>
+            <p class="drop-secondary" data-i18n="drop_secondary">or</p>
+            <div class="ev-pick">
+              <label class="btn ghost btn-file">
+                <span data-i18n="ev_choose_folder">Choose folder</span>
+                <input type="file" id="ev-folder-input" webkitdirectory directory multiple hidden>
+              </label>
+              <label class="btn ghost btn-file">
+                <span data-i18n="ev_choose_files">Choose files</span>
+                <input type="file" id="ev-files-input" multiple hidden>
+              </label>
+            </div>
+            <p class="drop-note" data-i18n="ev_drop_note">Every file is hashed one at a time, entirely in your browser. Nothing is uploaded.</p>
+          </section>
+
+          <!-- selection summary -->
+          <section id="ev-summary" class="file-info hidden">
+            <div class="finfo-row"><span class="finfo-k mono" data-i18n="ev_files">Files:</span> <span id="ev-count" class="finfo-v mono"></span></div>
+            <div class="finfo-row"><span class="finfo-k mono" data-i18n="ev_total">Total:</span> <span id="ev-total" class="finfo-v mono"></span></div>
+            <div class="finfo-row"><span class="finfo-k mono" data-i18n="ev_largest">Largest:</span> <span id="ev-largest" class="finfo-v mono"></span></div>
+          </section>
+          <p id="ev-size-warn" class="ev-warn hidden" data-i18n="ev_size_warn"></p>
+
+          <!-- custody metadata -->
+          <section class="ev-form">
+            <h2 class="block-label" data-i18n="ev_custody">Chain of custody</h2>
+            <p class="hint" data-i18n="ev_custody_hint">Recorded into the manifest as you type it. This is self-attested: the tool cannot verify who you are.</p>
+            <div class="ev-fields">
+              <input type="text" id="ev-case" class="text-input mono" data-i18n-ph="ev_case_ph" placeholder="Case ID" autocomplete="off">
+              <input type="text" id="ev-examiner" class="text-input mono" data-i18n-ph="ev_examiner_ph" placeholder="Examiner" autocomplete="off">
+              <input type="text" id="ev-desc" class="text-input mono" data-i18n-ph="ev_desc_ph" placeholder="Description" autocomplete="off">
+            </div>
+          </section>
+
+          <!-- algorithms -->
+          <section class="algorithms">
+            <h2 class="block-label" data-i18n="algorithms">Algorithms</h2>
+            <div class="algo-grid" id="ev-algo-grid">
+              <label><input type="checkbox" value="SHA-256" checked> SHA-256</label>
+              <label><input type="checkbox" value="SHA-1"> SHA-1</label>
+              <label><input type="checkbox" value="SHA-512"> SHA-512</label>
+              <label><input type="checkbox" value="MD5"> MD5</label>
+            </div>
+            <button id="ev-compute-btn" class="btn primary btn-block" disabled>
+              <span data-ico="bolt"></span> <span data-i18n="ev_build">Build manifest</span>
+            </button>
+          </section>
+
+          <!-- progress -->
+          <section id="ev-progress" class="progress hidden">
+            <div class="progress-bar"><div id="ev-progress-fill"></div></div>
+            <div id="ev-progress-text" class="progress-text mono"></div>
+          </section>
+
+          <!-- manifest -->
+          <section id="ev-results" class="results hidden">
+            <h2 class="block-label" data-i18n="ev_manifest">Manifest</h2>
+            <div id="ev-tally" class="ev-tally mono"></div>
+            <div id="ev-list"></div>
+            <div class="ev-actions">
+              <button type="button" id="ev-export-sha" class="btn ghost"><span data-i18n="ev_export_sha">Export .sha256</span></button>
+              <button type="button" id="ev-export-json" class="btn ghost"><span data-i18n="ev_export_json">Export JSON</span></button>
+            </div>
+            <p class="ev-disclaimer" data-i18n="ev_disclaimer"></p>
+          </section>
+
+          <!-- re-verify -->
+          <section class="ev-reverify">
+            <h2 class="block-label" data-i18n="ev_reverify">Re-verify against a manifest</h2>
+            <p class="hint" data-i18n="ev_reverify_hint">Load a manifest you exported earlier, then select the same folder and build again. Each file is reported as unchanged, altered, missing or new.</p>
+            <div class="ev-pick">
+              <label class="btn ghost btn-file">
+                <span data-i18n="ev_load_manifest">Load manifest</span>
+                <input type="file" id="ev-manifest-input" accept=".json,.sha256,.txt" hidden>
+              </label>
+              <button type="button" id="ev-clear-manifest" class="btn bare hidden"><span data-i18n="ev_clear">Clear</span></button>
+            </div>
+            <div id="ev-manifest-info" class="ev-loaded mono"></div>
+          </section>
+
+        </div><!-- /mode-evidence -->
 
       </div>
     </div>
