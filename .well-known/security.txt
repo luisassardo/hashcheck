@@ -1,0 +1,7 @@
+# RFC 9116 security.txt — must be served at https://<domain>/.well-known/security.txt
+# Update the Expires date at least once a year (keep it in the future, or clients ignore the file).
+Contact: mailto:security@c-lab.tools
+Expires: 2027-06-22T00:00:00Z
+Preferred-Languages: en, es, de
+Canonical: https://hashcheck.c-lab.tools/.well-known/security.txt
+Policy: https://github.com/luisassardo/hashcheck/blob/main/SECURITY.md
